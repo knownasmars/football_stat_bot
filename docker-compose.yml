@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:latest
+    container_name: zeonfootball-postgres
+    environment:
+      POSTGRES_DB: zeonfootball
+      POSTGRES_USER: zeon
+      POSTGRES_PASSWORD: zeon
+    ports:
+      - "5444:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data

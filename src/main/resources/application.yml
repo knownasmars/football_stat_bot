@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5444/zeonfootball
+    username: zeon
+    password: zeon
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+telegram:
+  bot:
+    name: newzeon_football_bot
+    token: 7202087017:AAEjEsvQ3qRh-7-uM3og4BHZqtygUrEEx7I
