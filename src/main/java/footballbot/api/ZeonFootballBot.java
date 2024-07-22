@@ -26,7 +26,7 @@ public class ZeonFootballBot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
 
             if (messageText.equals("/start")) {
-                sendResponse(chatId, "Welcome to Football Bot! Use /register to register for the next match.");
+                sendResponse(chatId, "Welcome to New Zeon Football! Use /register to register for the next match.");
             } else if (messageText.equals("/register")) {
                 playerService.registerPlayer(update.getMessage().getFrom().getUserName());
                 sendResponse(chatId, "You are registered!");

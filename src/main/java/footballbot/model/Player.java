@@ -22,11 +22,4 @@ public class Player {
     private int goals;
     private int assists;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }
