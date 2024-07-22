@@ -19,6 +19,7 @@ public class StartCommandHandler implements CommandHandler {
     @Override
     public void handle(Update update) {
         String chatId = update.getMessage().getChatId().toString();
-        messageService.sendResponse(chatId, "Welcome to New Zeon Football! Use /register to register for the next match.");
+        messageService.sendResponse(chatId,
+                "Welcome to New Zeon Football! Use /register to register for the next match.");
     }
 }
