@@ -3,6 +3,7 @@ package footballbot.api;
 import footballbot.config.BotProperties;
 import footballbot.handler.command.CommandHandler;
 import footballbot.model.Player;
+import footballbot.service.ChatIdService;
 import footballbot.service.MessageService;
 import footballbot.service.PlayerService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class ZeonFootballBot extends TelegramLongPollingBot {
     private final List<CommandHandler> handlers;
     private final MessageService messageService;
     private final PlayerService playerService;
+    private final ChatIdService chatIdService;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -32,6 +34,8 @@ public class ZeonFootballBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             String chatId = update.getMessage().getChatId().toString();
+
+            chatIdService.addChatId(chatId);
 
             if (messageText.equals("/start")) {
                 messageService.sendResponseWithKeyboard(chatId, "Welcome! Please choose an option:");
@@ -50,7 +54,13 @@ public class ZeonFootballBot extends TelegramLongPollingBot {
     }
 
     private void handleCallbackQuery(String chatId, String callbackData) {
-        if (callbackData.equals("show_players")) {
+        if (callbackData.startsWith("play_")) {
+            String matchDate = callbackData.substring(5);
+            messageService.sendResponse(chatId, "Вы зарегистрированы на матч " + matchDate);
+        } else if (callbackData.startsWith("skip_")) {
+            String matchDate = callbackData.substring(5);
+            messageService.sendResponse(chatId, "Вы пропускаете матч " + matchDate);
+        } else if (callbackData.equals("show_players")) {
             List<Player> players = playerService.getAllPlayers();
             String responseText = messageService.formatPlayersList(players);
             messageService.sendResponse(chatId, responseText);
