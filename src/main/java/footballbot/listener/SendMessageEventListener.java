@@ -22,9 +22,8 @@ public class SendMessageEventListener implements ApplicationListener<SendMessage
 
     @Override
     public void onApplicationEvent(SendMessageEvent event) {
-        SendMessage message = new SendMessage();
-        message.setChatId(event.getChatId());
-        message.setText(event.getText());
+        SendMessage message = event.getSendMessage();
+
         try {
             bot.execute(message);
         } catch (TelegramApiException e) {
