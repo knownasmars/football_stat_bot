@@ -1,33 +1,38 @@
 package footballbot.listener;
 
-import footballbot.api.ZeonFootballBot;
 import footballbot.event.SendMessageEvent;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
+import footballbot.event.SendPollEvent;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-@Slf4j
 @Component
-public class SendMessageEventListener implements ApplicationListener<SendMessageEvent> {
+@RequiredArgsConstructor
+public class SendMessageEventListener {
 
-    private final ZeonFootballBot bot;
+    private static final Logger logger = LoggerFactory.getLogger(SendMessageEventListener.class);
 
-    @Autowired
-    public SendMessageEventListener(ZeonFootballBot bot) {
-        this.bot = bot;
+    private final AbsSender absSender;
+
+    @EventListener
+    public void onApplicationEvent(SendMessageEvent event) {
+        try {
+            absSender.execute(event.getSendMessage());
+        } catch (TelegramApiException e) {
+            logger.error("Error sending message: {}", e.getMessage(), e);
+        }
     }
 
-    @Override
-    public void onApplicationEvent(SendMessageEvent event) {
-        SendMessage message = event.getSendMessage();
-
+    @EventListener
+    public void onApplicationEvent(SendPollEvent event) {
         try {
-            bot.execute(message);
+            absSender.execute(event.getSendPoll());
         } catch (TelegramApiException e) {
-            log.error(e.getMessage(), e);
+            logger.error("Error sending poll: {}", e.getMessage(), e);
         }
     }
 }

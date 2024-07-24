@@ -2,10 +2,12 @@ package footballbot.service;
 
 import footballbot.converter.MessageConverter;
 import footballbot.event.SendMessageEvent;
+import footballbot.event.SendPollEvent;
 import footballbot.model.Player;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -40,15 +42,14 @@ public class MessageService {
         eventPublisher.publishEvent(event);
     }
 
-    public void sendVoteMessage(String chatId, String text, String matchDate) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(text);
+    public void sendPoll(String chatId, String question, List<String> options) {
+        SendPoll poll = new SendPoll();
+        poll.setChatId(chatId);
+        poll.setQuestion(question);
+        poll.setOptions(options);
+        poll.setIsAnonymous(false);
 
-        InlineKeyboardMarkup keyboardMarkup = createVoteKeyboard(matchDate);
-        message.setReplyMarkup(keyboardMarkup);
-
-        SendMessageEvent event = new SendMessageEvent(this, message);
+        SendPollEvent event = new SendPollEvent(this, poll);
         eventPublisher.publishEvent(event);
     }
 
@@ -62,20 +63,6 @@ public class MessageService {
         row.add(new KeyboardButton("Show Players"));
 
         List<KeyboardRow> keyboard = new ArrayList<>();
-        keyboard.add(row);
-
-        keyboardMarkup.setKeyboard(keyboard);
-        return keyboardMarkup;
-    }
-
-    private InlineKeyboardMarkup createVoteKeyboard(String matchDate) {
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        row.add(InlineKeyboardButton.builder().text("Играю!").callbackData("play_" + matchDate).build());
-        row.add(InlineKeyboardButton.builder().text("Пропускаю").callbackData("skip_" + matchDate).build());
-
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         keyboard.add(row);
 
         keyboardMarkup.setKeyboard(keyboard);
