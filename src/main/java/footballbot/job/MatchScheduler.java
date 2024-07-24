@@ -3,7 +3,7 @@ package footballbot.job;
 import footballbot.service.ChatIdService;
 import footballbot.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,16 +12,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
+@Slf4j
 @Component
-@EnableScheduling
 @RequiredArgsConstructor
 public class MatchScheduler {
 
     private final MessageService messageService;
-
     private final ChatIdService chatIdService;
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 30000)
     public void sendMatchReminder() {
         LocalDate nextMatchDate = getNextMatchDate();
         String formattedDate = nextMatchDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"));

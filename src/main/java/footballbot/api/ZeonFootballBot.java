@@ -36,6 +36,7 @@ public class ZeonFootballBot extends TelegramLongPollingBot {
             String chatId = update.getMessage().getChatId().toString();
 
             chatIdService.addChatId(chatId);
+            logger.info("Saved chat ID: {}", chatId);
 
             if (messageText.equals("/start")) {
                 messageService.sendResponseWithKeyboard(chatId, "Welcome! Please choose an option:");
